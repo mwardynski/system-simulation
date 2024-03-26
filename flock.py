@@ -2,7 +2,7 @@ from boid import Boid
 
 COHESION_RADIUS = 100
 ALIGNMENT_RADIUS = 50
-SEPARATION_RADIUS = 15
+SEPARATION_RADIUS = 85
 
 class Flock:
     def __init__(self, width, height, size):
@@ -14,12 +14,14 @@ class Flock:
     
     def update(self):
         for boid in self.boids:
-            self.update_by_cohesion(boid)
-            self.update_by_alignment(boid)
-            self.update_by_separation(boid)
+            influs = []
+            influs.append(self.calc_influ_by_cohesion(boid))
+            influs.append(self.calc_influ_by_alignment(boid))
+            influs.append(self.calc_influ_by_separation(boid))
+            boid.applyInflus(influs)
             boid.update()
 
-    def update_by_cohesion(self, boid):
+    def calc_influ_by_cohesion(self, boid):
         influ_vx, influ_vy = 0, 0
         count = 0
         for otherBoid in self.boids:
@@ -27,16 +29,17 @@ class Flock:
                 continue
             distance = boid.calculate_distance(otherBoid)
             if 0 < distance < COHESION_RADIUS:
-                influ_vx += boid.vx
-                influ_vy += boid.vy
+                influ_vx += otherBoid.x
+                influ_vy += otherBoid.y
                 count += 1
         if count > 0:
             influ_vx /= count
+            influ_vx -= boid.x
             influ_vy /= count
-        boid.vx += influ_vx
-        boid.vy += influ_vy
+            influ_vy -= boid.y
+        return [influ_vx, influ_vy]
 
-    def update_by_alignment(self, boid):
+    def calc_influ_by_alignment(self, boid):
         influ_vx, influ_vy = 0, 0
         count = 0
         for otherBoid in self.boids:
@@ -44,16 +47,15 @@ class Flock:
                 continue
             distance = boid.calculate_distance(otherBoid)
             if 0 < distance < ALIGNMENT_RADIUS:
-                influ_vx += boid.vx
-                influ_vy += boid.vy
+                influ_vx += otherBoid.vx
+                influ_vy += otherBoid.vy
                 count += 1
         if count > 0:
             influ_vx /= count
             influ_vy /= count
-        boid.vx += influ_vx
-        boid.vy += influ_vy
+        return [influ_vx, influ_vy]
     
-    def update_by_separation(self, boid):
+    def calc_influ_by_separation(self, boid):
         influ_vx, influ_vy = 0, 0
         count = 0
         for otherBoid in self.boids:
@@ -67,5 +69,4 @@ class Flock:
         if count > 0:
             influ_vx /= count
             influ_vy /= count
-        boid.vx += influ_vx
-        boid.vy += influ_vy
+        return [influ_vx, influ_vy]

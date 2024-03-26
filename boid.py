@@ -16,6 +16,11 @@ class Boid:
     def draw(self, board):
         pygame.draw.circle(board, "blue", (int(self.x), int(self.y)), 3)
 
+    def applyInflus(self, influs):
+        for influ in influs:
+            self.vx += influ[0]
+            self.vy += influ[1]
+
     def update(self):
         self.scale_velocity()
         self.x += self.vx
