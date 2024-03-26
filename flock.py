@@ -7,3 +7,7 @@ class Flock:
     def draw(self, board):
         for boid in self.boids:
             boid.draw(board)
+    
+    def update(self):
+        for boid in self.boids:
+            boid.update(self.boids)

@@ -27,6 +27,7 @@ def main():
 
         board.fill(WHITE)
 
+        flock.update()
         flock.draw(board)
 
         pygame.display.flip()
