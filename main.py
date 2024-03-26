@@ -7,7 +7,7 @@ WIDTH = 800
 HEIGHT = 600
 WINDOW_TITLE = "School of Fish"
 
-BOID_NUMBER = 100
+BOID_NUMBER = 30
 TICK_DURATION = 50
 
 def main():
