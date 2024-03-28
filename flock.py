@@ -12,6 +12,14 @@ class Flock:
     def draw(self, board):
         for boid in self.boids:
             boid.draw(board)
+
+    def check_if_flock_formed(self):
+        # we will check if distance between boids is less than than some value, if yes then flock is formed
+        for i in range(len(self.boids)):
+            for j in range(i+1, len(self.boids)):
+                if self.boids[i].calculate_distance(self.boids[j]) > 100:
+                    return False
+        return True
     
     def update(self):
         for boid in self.boids:
@@ -55,12 +63,13 @@ class Flock:
             influ_vx /= count
             influ_vy /= count
     
-        noise_scale = 1.5
-        noise_vx = random.uniform(-noise_scale, noise_scale)
-        noise_vy = random.uniform(-noise_scale, noise_scale)
+        if self.check_if_flock_formed():
+            noise_scale = 1.5
+            noise_vx = random.uniform(-noise_scale, noise_scale)
+            noise_vy = random.uniform(-noise_scale, noise_scale)
 
-        influ_vx += noise_vx
-        influ_vy += noise_vy
+            influ_vx += noise_vx
+            influ_vy += noise_vy
 
         return [influ_vx, influ_vy]
     
