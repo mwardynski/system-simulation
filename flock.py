@@ -1,3 +1,4 @@
+import random
 from boid import Boid
 
 COHESION_RADIUS = 100
@@ -53,6 +54,14 @@ class Flock:
         if count > 0:
             influ_vx /= count
             influ_vy /= count
+    
+        noise_scale = 1.5
+        noise_vx = random.uniform(-noise_scale, noise_scale)
+        noise_vy = random.uniform(-noise_scale, noise_scale)
+
+        influ_vx += noise_vx
+        influ_vy += noise_vy
+
         return [influ_vx, influ_vy]
     
     def calc_influ_by_separation(self, boid):
