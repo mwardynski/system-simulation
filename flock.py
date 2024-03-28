@@ -63,13 +63,17 @@ class Flock:
             influ_vx /= count
             influ_vy /= count
     
+        noise_scale = None
         if self.check_if_flock_formed():
             noise_scale = 1.5
-            noise_vx = random.uniform(-noise_scale, noise_scale)
-            noise_vy = random.uniform(-noise_scale, noise_scale)
+        else:
+            noise_scale = 0.5
 
-            influ_vx += noise_vx
-            influ_vy += noise_vy
+        noise_vx = random.uniform(-noise_scale, noise_scale)
+        noise_vy = random.uniform(-noise_scale, noise_scale)
+
+        influ_vx += noise_vx
+        influ_vy += noise_vy
 
         return [influ_vx, influ_vy]
     
