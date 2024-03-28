@@ -21,6 +21,24 @@ class Flock:
                     return False
         return True
     
+    def resultant_direction_school(self):
+        # we will calculate resultant direction of the school, if formed then we will change current direction of boid adding some noise
+        if self.check_if_flock_formed():
+            # calculate resultant direction
+            x, y = 0, 0
+            for boid in self.boids:
+                x += boid.vx
+                y += boid.vy
+            x /= len(self.boids)
+            y /= len(self.boids)
+            # add some noise
+            noise_scale = 0.5
+            noise_vx = random.uniform(-noise_scale, noise_scale)
+            noise_vy = random.uniform(-noise_scale, noise_scale)
+            x += noise_vx
+            y += noise_vy
+            return [x, y]
+    
     def update(self):
         for boid in self.boids:
             influs = []
