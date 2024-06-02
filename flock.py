@@ -9,8 +9,9 @@ OBSTACLE_Y = 300
 OBSTACLE_SIZE = 50
 
 class Flock:
-    def __init__(self, width, height, size):
-        self.boids = [Boid(width, height) for _ in range(size)]
+    def __init__(self, width, height, size, color):
+        self.boids = [Boid(width, height, color) for _ in range(size)]
+        self.color = color
 
     def draw(self, board):
         for boid in self.boids:
@@ -38,13 +39,14 @@ class Flock:
             y += noise_vy
             return [x, y]
 
-    def update(self, bounce_edges):
+    def update(self, bounce_edges, other_flock):
         for boid in self.boids:
             influs = []
             influs.append(self.calc_influ_by_cohesion(boid))
             influs.append(self.calc_influ_by_alignment(boid))
             influs.append(self.calc_influ_by_separation(boid))
             influs.append(boid.avoid_obstacle(OBSTACLE_X, OBSTACLE_Y, OBSTACLE_SIZE))
+            influs.extend(self.handle_inter_flock_collisions(boid, other_flock))
             boid.applyInflus(influs)
             boid.update(bounce_edges)
 
@@ -105,3 +107,9 @@ class Flock:
             influ_vx /= count
             influ_vy /= count
         return [influ_vx, influ_vy]
+
+    def handle_inter_flock_collisions(self, boid, other_flock):
+        influs = []
+        for otherBoid in other_flock.boids:
+            influs.append(boid.avoid_other_boids(otherBoid))
+        return influs

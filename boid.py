@@ -8,16 +8,17 @@ OBSTACLE_Y = 300
 OBSTACLE_SIZE = 50
 
 class Boid:
-    def __init__(self, width, height):
+    def __init__(self, width, height, color):
         self.width = width
         self.height = height
+        self.color = color
         self.x = random.randint(0, width)
         self.y = random.randint(0, height)
         self.vx = random.uniform(-1, 1)
         self.vy = random.uniform(-1, 1)
 
     def draw(self, board):
-        pygame.draw.circle(board, "blue", (int(self.x), int(self.y)), 3)
+        pygame.draw.circle(board, self.color, (int(self.x), int(self.y)), 3)
 
     def applyInflus(self, influs):
         for influ in influs:
@@ -54,10 +55,10 @@ class Boid:
     def bounce_off_edges(self):
         if self.x < 0 or self.x > self.width:
             self.vx *= -1
-            self.x = max(0, min(self.x, self.width))  # Ensure boid stays within bounds
+            self.x = max(0, min(self.x, self.width))
         if self.y < 0 or self.y > self.height:
             self.vy *= -1
-            self.y = max(0, min(self.y, self.height))  # Ensure boid stays within bounds
+            self.y = max(0, min(self.y, self.height))
 
     def calculate_distance(self, other):
         return math.sqrt((self.x - other.x)**2 + (self.y - other.y)**2)
@@ -71,3 +72,11 @@ class Boid:
             avoid_force_y = self.y - obstacle_y
             return [avoid_force_x, avoid_force_y]
         return [0, 0]
+
+    def avoid_other_boids(self, other):
+        avoid_force_x, avoid_force_y = 0, 0
+        distance = self.calculate_distance(other)
+        if distance < 20:
+            avoid_force_x = self.x - other.x
+            avoid_force_y = self.y - other.y
+        return [avoid_force_x, avoid_force_y]

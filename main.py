@@ -3,6 +3,8 @@ from flock import Flock
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+BLUE = (0, 0, 255)
+RED = (255, 0, 0)
 
 WIDTH = 800
 HEIGHT = 600
@@ -23,7 +25,8 @@ def main():
     clock = pygame.time.Clock()
     running = True
 
-    flock = Flock(WIDTH, HEIGHT, BOID_NUMBER)
+    flock1 = Flock(WIDTH, HEIGHT, BOID_NUMBER, BLUE)
+    flock2 = Flock(WIDTH, HEIGHT, BOID_NUMBER, RED)
 
     while running:
         for event in pygame.event.get():
@@ -32,11 +35,12 @@ def main():
 
         board.fill(WHITE)
 
-        # Draw the obstacle
         pygame.draw.rect(board, BLACK, (OBSTACLE_X - OBSTACLE_SIZE // 2, OBSTACLE_Y - OBSTACLE_SIZE // 2, OBSTACLE_SIZE, OBSTACLE_SIZE))
 
-        flock.update(BOUNCE_EDGES)
-        flock.draw(board)
+        flock1.update(BOUNCE_EDGES, flock2)
+        flock2.update(BOUNCE_EDGES, flock1)
+        flock1.draw(board)
+        flock2.draw(board)
 
         pygame.display.flip()
         clock.tick(TICK_DURATION)
