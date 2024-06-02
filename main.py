@@ -13,6 +13,7 @@ TICK_DURATION = 50
 OBSTACLE_X = 400
 OBSTACLE_Y = 300
 OBSTACLE_SIZE = 50
+BOUNCE_EDGES = False
 
 def main():
     pygame.init()
@@ -34,7 +35,7 @@ def main():
         # Draw the obstacle
         pygame.draw.rect(board, BLACK, (OBSTACLE_X - OBSTACLE_SIZE // 2, OBSTACLE_Y - OBSTACLE_SIZE // 2, OBSTACLE_SIZE, OBSTACLE_SIZE))
 
-        flock.update()
+        flock.update(BOUNCE_EDGES)
         flock.draw(board)
 
         pygame.display.flip()

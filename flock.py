@@ -38,7 +38,7 @@ class Flock:
             y += noise_vy
             return [x, y]
 
-    def update(self):
+    def update(self, bounce_edges):
         for boid in self.boids:
             influs = []
             influs.append(self.calc_influ_by_cohesion(boid))
@@ -46,7 +46,7 @@ class Flock:
             influs.append(self.calc_influ_by_separation(boid))
             influs.append(boid.avoid_obstacle(OBSTACLE_X, OBSTACLE_Y, OBSTACLE_SIZE))
             boid.applyInflus(influs)
-            boid.update()
+            boid.update(bounce_edges)
 
     def calc_influ_by_cohesion(self, boid):
         influ_vx, influ_vy = 0, 0

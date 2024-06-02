@@ -24,11 +24,15 @@ class Boid:
             self.vx += influ[0]
             self.vy += influ[1]
 
-    def update(self):
+    def update(self, bounce_edges):
         self.scale_velocity()
         self.x += self.vx
         self.y += self.vy
-        self.wrap_around_edges()
+
+        if bounce_edges:
+            self.bounce_off_edges()
+        else:
+            self.wrap_around_edges()
 
     def scale_velocity(self):
         velocity = math.sqrt(self.vx**2 + self.vy**2)
@@ -46,6 +50,14 @@ class Boid:
             self.y = self.height
         elif self.y > self.height:
             self.y = 0
+
+    def bounce_off_edges(self):
+        if self.x < 0 or self.x > self.width:
+            self.vx *= -1
+            self.x = max(0, min(self.x, self.width))  # Ensure boid stays within bounds
+        if self.y < 0 or self.y > self.height:
+            self.vy *= -1
+            self.y = max(0, min(self.y, self.height))  # Ensure boid stays within bounds
 
     def calculate_distance(self, other):
         return math.sqrt((self.x - other.x)**2 + (self.y - other.y)**2)
