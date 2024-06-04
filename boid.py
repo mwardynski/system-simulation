@@ -6,6 +6,7 @@ VELOCITY_LIMIT = 5
 OBSTACLE_X = 400
 OBSTACLE_Y = 300
 OBSTACLE_SIZE = 50
+SMALL_OBSTACLE_SIZE = 20
 
 class Boid:
     def __init__(self, width, height, color):
@@ -58,7 +59,6 @@ class Boid:
             self.x = max(0, min(self.x, self.width))
         if self.y < 0 or self.y > self.height:
             self.vy *= -1
-            self.y = max(0, min(self.y, self.height))
 
     def calculate_distance(self, other):
         return math.sqrt((self.x - other.x)**2 + (self.y - other.y)**2)

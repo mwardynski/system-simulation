@@ -7,6 +7,7 @@ SEPARATION_RADIUS = 85
 OBSTACLE_X = 400
 OBSTACLE_Y = 300
 OBSTACLE_SIZE = 50
+SMALL_OBSTACLE_SIZE = 20
 
 class Flock:
     def __init__(self, width, height, size, color):
@@ -40,12 +41,15 @@ class Flock:
             return [x, y]
 
     def update(self, bounce_edges, other_flock):
+        obstacles = self.additional_obstacles()
         for boid in self.boids:
             influs = []
             influs.append(self.calc_influ_by_cohesion(boid))
             influs.append(self.calc_influ_by_alignment(boid))
             influs.append(self.calc_influ_by_separation(boid))
             influs.append(boid.avoid_obstacle(OBSTACLE_X, OBSTACLE_Y, OBSTACLE_SIZE))
+            for obstacle in obstacles:
+                influs.append(boid.avoid_obstacle(*obstacle))
             influs.extend(self.handle_inter_flock_collisions(boid, other_flock))
             boid.applyInflus(influs)
             boid.update(bounce_edges)
@@ -113,3 +117,12 @@ class Flock:
         for otherBoid in other_flock.boids:
             influs.append(boid.avoid_other_boids(otherBoid))
         return influs
+
+    def additional_obstacles(self):
+        offset = OBSTACLE_SIZE // 2 + SMALL_OBSTACLE_SIZE // 2 + 10
+        return [
+            (OBSTACLE_X - offset, OBSTACLE_Y - offset, SMALL_OBSTACLE_SIZE),
+            (OBSTACLE_X + offset, OBSTACLE_Y - offset, SMALL_OBSTACLE_SIZE),
+            (OBSTACLE_X - offset, OBSTACLE_Y + offset, SMALL_OBSTACLE_SIZE),
+            (OBSTACLE_X + offset, OBSTACLE_Y + offset, SMALL_OBSTACLE_SIZE)
+        ]
