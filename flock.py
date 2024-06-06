@@ -4,10 +4,6 @@ from boid import Boid
 COHESION_RADIUS = 100
 ALIGNMENT_RADIUS = 50
 SEPARATION_RADIUS = 85
-OBSTACLE_X = 400
-OBSTACLE_Y = 300
-OBSTACLE_SIZE = 50
-SMALL_OBSTACLE_SIZE = 20
 
 class Flock:
     def __init__(self, width, height, size, color):
@@ -40,16 +36,15 @@ class Flock:
             y += noise_vy
             return [x, y]
 
-    def update(self, bounce_edges, other_flock):
-        obstacles = self.additional_obstacles()
+    def update(self, bounce_edges, other_flock, obstacles):
         for boid in self.boids:
             influs = []
             influs.append(self.calc_influ_by_cohesion(boid))
             influs.append(self.calc_influ_by_alignment(boid))
             influs.append(self.calc_influ_by_separation(boid))
-            influs.append(boid.avoid_obstacle(OBSTACLE_X, OBSTACLE_Y, OBSTACLE_SIZE))
+            # influs.append(boid.avoid_obstacle(OBSTACLE_X, OBSTACLE_Y, OBSTACLE_SIZE))
             for obstacle in obstacles:
-                influs.append(boid.avoid_obstacle(*obstacle))
+                influs.append(boid.avoid_obstacle(obstacle))
             influs.extend(self.handle_inter_flock_collisions(boid, other_flock))
             boid.applyInflus(influs)
             boid.update(bounce_edges)

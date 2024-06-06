@@ -1,5 +1,6 @@
 import pygame
 from flock import Flock
+from obstacle import Obstacle
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -26,8 +27,10 @@ def main():
     clock = pygame.time.Clock()
     running = True
 
+    obstacles = generateObstacles()
     flock1 = Flock(WIDTH, HEIGHT, BOID_NUMBER, BLUE)
     flock2 = Flock(WIDTH, HEIGHT, BOID_NUMBER, RED)
+    
 
     while running:
         for event in pygame.event.get():
@@ -36,20 +39,13 @@ def main():
 
         board.fill(WHITE)
 
-        pygame.draw.rect(board, BLACK, (OBSTACLE_X - OBSTACLE_SIZE // 2, OBSTACLE_Y - OBSTACLE_SIZE // 2, OBSTACLE_SIZE, OBSTACLE_SIZE))
+        for obstacle in obstacles:
+            obstacle_ul = obstacle.get_upper_left_corner()
+            obstacle_size = obstacle.get_size()
+            pygame.draw.rect(board, BLACK, (obstacle_ul[0], obstacle_ul[1], obstacle_size, obstacle_size))
 
-        offset = OBSTACLE_SIZE // 2 + SMALL_OBSTACLE_SIZE // 2 + 100
-        small_obstacles = [
-            (OBSTACLE_X - offset, OBSTACLE_Y - offset),
-            (OBSTACLE_X + offset, OBSTACLE_Y - offset),
-            (OBSTACLE_X - offset, OBSTACLE_Y + offset),
-            (OBSTACLE_X + offset, OBSTACLE_Y + offset)
-        ]
-        for (ox, oy) in small_obstacles:
-            pygame.draw.rect(board, BLACK, (ox - SMALL_OBSTACLE_SIZE // 2, oy - SMALL_OBSTACLE_SIZE // 2, SMALL_OBSTACLE_SIZE, SMALL_OBSTACLE_SIZE))
-
-        flock1.update(BOUNCE_EDGES, flock2)
-        flock2.update(BOUNCE_EDGES, flock1)
+        flock1.update(BOUNCE_EDGES, flock2, obstacles)
+        flock2.update(BOUNCE_EDGES, flock1, obstacles)
         flock1.draw(board)
         flock2.draw(board)
 
@@ -57,6 +53,19 @@ def main():
         clock.tick(TICK_DURATION)
 
     pygame.quit()
+
+def generateObstacles():
+    offset = OBSTACLE_SIZE // 2 + SMALL_OBSTACLE_SIZE // 2 + 100
+    obstacles = [
+        Obstacle(OBSTACLE_X, OBSTACLE_Y, OBSTACLE_SIZE),
+        Obstacle(OBSTACLE_X - offset, OBSTACLE_Y - offset, SMALL_OBSTACLE_SIZE),
+        Obstacle(OBSTACLE_X + offset, OBSTACLE_Y - offset, SMALL_OBSTACLE_SIZE),
+        Obstacle(OBSTACLE_X - offset, OBSTACLE_Y + offset, SMALL_OBSTACLE_SIZE),
+        Obstacle(OBSTACLE_X + offset, OBSTACLE_Y + offset, SMALL_OBSTACLE_SIZE)
+    ]
+    return obstacles
+        
+
 
 if __name__ == "__main__":
     main()

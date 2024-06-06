@@ -3,10 +3,6 @@ import math
 import pygame
 
 VELOCITY_LIMIT = 5
-OBSTACLE_X = 400
-OBSTACLE_Y = 300
-OBSTACLE_SIZE = 50
-SMALL_OBSTACLE_SIZE = 20
 
 class Boid:
     def __init__(self, width, height, color):
@@ -63,7 +59,9 @@ class Boid:
     def calculate_distance(self, other):
         return math.sqrt((self.x - other.x)**2 + (self.y - other.y)**2)
     
-    def avoid_obstacle(self, obstacle_x, obstacle_y, obstacle_size):
+    def avoid_obstacle(self, obstacle):
+        obstacle_x, obstacle_y = obstacle.get_center()
+        obstacle_size = obstacle.get_size()
         dx = obstacle_x - self.x
         dy = obstacle_y - self.y
         distance = math.sqrt(dx**2 + dy**2)
