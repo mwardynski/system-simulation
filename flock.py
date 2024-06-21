@@ -1,40 +1,43 @@
 import random
+import math
 from boid import Boid
 
 COHESION_RADIUS = 100
 ALIGNMENT_RADIUS = 50
 SEPARATION_RADIUS = 85
 
+FORMED_MAX_DISTANCE = 100
+
 class Flock:
     def __init__(self, width, height, size, color):
         self.boids = [Boid(width, height, color) for _ in range(size)]
         self.color = color
+        self.formed = False
 
     def draw(self, board):
         for boid in self.boids:
             boid.draw(board)
 
     def check_if_flock_formed(self):
-        for i in range(len(self.boids)):
-            for j in range(i+1, len(self.boids)):
-                if self.boids[i].calculate_distance(self.boids[j]) > 100:
-                    return False
-        return True
-    
-    def resultant_direction_school(self):
-        if self.check_if_flock_formed():
-            x, y = 0, 0
-            for boid in self.boids:
-                x += boid.vx
-                y += boid.vy
-            x /= len(self.boids)
-            y /= len(self.boids)
-            noise_scale = 0.5
-            noise_vx = random.uniform(-noise_scale, noise_scale)
-            noise_vy = random.uniform(-noise_scale, noise_scale)
-            x += noise_vx
-            y += noise_vy
-            return [x, y]
+        to_check = [self.boids[0]]
+        included = [False for _ in range(len(self.boids))]
+        included[0] = True
+        included_counter = 1
+
+        while len(to_check) > 0:
+            selected_boid = to_check.pop()
+            for i, boid in enumerate(self.boids):
+                if boid is selected_boid or included[i]:
+                    continue
+                distance = math.sqrt((selected_boid.x - boid.x)**2 + (selected_boid.y - boid.y)**2)
+                if distance <= FORMED_MAX_DISTANCE:
+                    to_check.append(boid)
+                    included[i] = True
+                    included_counter += 1
+                if len(self.boids) == included_counter:
+                    return True
+        
+        return len(self.boids) == included_counter
 
     def update(self, bounce_edges, other_flock, obstacles):
         for boid in self.boids:
@@ -82,7 +85,8 @@ class Flock:
             influ_vx /= count
             influ_vy /= count
 
-        noise_scale = 1.5 if self.check_if_flock_formed() else 0.5
+        self.formed = self.check_if_flock_formed()
+        noise_scale = 1.5 if self.formed else 0.5
         noise_vx = random.uniform(-noise_scale, noise_scale)
         noise_vy = random.uniform(-noise_scale, noise_scale)
 

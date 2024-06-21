@@ -28,10 +28,10 @@ def main():
     running = True
 
     obstacles = generateObstacles()
-    flock1 = Flock(WIDTH, HEIGHT, BOID_NUMBER, BLUE)
-    flock2 = Flock(WIDTH, HEIGHT, BOID_NUMBER, RED)
     
+    flocks = [Flock(WIDTH, HEIGHT, BOID_NUMBER, BLUE), Flock(WIDTH, HEIGHT, BOID_NUMBER, RED)]
 
+    round_counter = 1
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -44,13 +44,21 @@ def main():
             obstacle_size = obstacle.get_size()
             pygame.draw.rect(board, BLACK, (obstacle_ul[0], obstacle_ul[1], obstacle_size, obstacle_size))
 
-        flock1.update(BOUNCE_EDGES, flock2, obstacles)
-        flock2.update(BOUNCE_EDGES, flock1, obstacles)
-        flock1.draw(board)
-        flock2.draw(board)
+        round_start_formed = list(map(lambda f: f.formed, flocks))        
+        flocks[0].update(BOUNCE_EDGES, flocks[1], obstacles)
+        flocks[1].update(BOUNCE_EDGES, flocks[0], obstacles)
+        [flock.draw(board) for flock in flocks]
 
         pygame.display.flip()
         clock.tick(TICK_DURATION)
+
+        for i, flock in enumerate(flocks):
+            if flock.formed is True and round_start_formed[i] is False:
+                print(f'Flock {i+1} formed in round {round_counter}')
+            elif flock.formed is False and round_start_formed[i] is True:
+                print(f'Flock {i+1} fell apart in round {round_counter}') 
+        round_counter += 1
+
 
     pygame.quit()
 
