@@ -28,8 +28,10 @@ def main():
     running = True
 
     obstacles = generateObstacles()
+    # obstacles = []
     
     flocks = [Flock(WIDTH, HEIGHT, BOID_NUMBER, BLUE), Flock(WIDTH, HEIGHT, BOID_NUMBER, RED)]
+    # flocks = [Flock(WIDTH, HEIGHT, BOID_NUMBER, BLUE)]
 
     round_counter = 1
     while running:
@@ -45,6 +47,7 @@ def main():
             pygame.draw.rect(board, BLACK, (obstacle_ul[0], obstacle_ul[1], obstacle_size, obstacle_size))
 
         round_start_formed = list(map(lambda f: f.formed, flocks))        
+        # flocks[0].update(BOUNCE_EDGES, None, obstacles)
         flocks[0].update(BOUNCE_EDGES, flocks[1], obstacles)
         flocks[1].update(BOUNCE_EDGES, flocks[0], obstacles)
         [flock.draw(board) for flock in flocks]

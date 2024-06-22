@@ -2,9 +2,21 @@ import random
 import math
 from boid import Boid
 
+
+#1
 COHESION_RADIUS = 100
 ALIGNMENT_RADIUS = 45
 SEPARATION_RADIUS = 95
+
+#2
+# COHESION_RADIUS = 100
+# ALIGNMENT_RADIUS = 75
+# SEPARATION_RADIUS = 85
+
+#3
+# COHESION_RADIUS = 100
+# ALIGNMENT_RADIUS = 45
+# SEPARATION_RADIUS = 95
 
 FORMED_MAX_DISTANCE = 100
 
@@ -112,6 +124,8 @@ class Flock:
         return [influ_vx, influ_vy]
 
     def handle_inter_flock_collisions(self, boid, other_flock):
+        if other_flock is None:
+            return [[0, 0], [0, 0]]
         influs = []
         for otherBoid in other_flock.boids:
             influs.append(boid.avoid_other_boids(otherBoid))

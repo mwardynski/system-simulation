@@ -3,6 +3,7 @@ import math
 import pygame
 
 VELOCITY_LIMIT = 5
+INFLU_FACTOR = 1
 
 class Boid:
     def __init__(self, width, height, color):
@@ -19,8 +20,8 @@ class Boid:
 
     def applyInflus(self, influs):
         for influ in influs:
-            self.vx += influ[0]
-            self.vy += influ[1]
+            self.vx += INFLU_FACTOR * influ[0]
+            self.vy += INFLU_FACTOR * influ[1]
 
     def update(self, bounce_edges):
         self.scale_velocity()
