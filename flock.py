@@ -3,8 +3,8 @@ import math
 from boid import Boid
 
 COHESION_RADIUS = 100
-ALIGNMENT_RADIUS = 50
-SEPARATION_RADIUS = 85
+ALIGNMENT_RADIUS = 45
+SEPARATION_RADIUS = 95
 
 FORMED_MAX_DISTANCE = 100
 
@@ -116,12 +116,3 @@ class Flock:
         for otherBoid in other_flock.boids:
             influs.append(boid.avoid_other_boids(otherBoid))
         return influs
-
-    def additional_obstacles(self):
-        offset = OBSTACLE_SIZE // 2 + SMALL_OBSTACLE_SIZE // 2 + 10
-        return [
-            (OBSTACLE_X - offset, OBSTACLE_Y - offset, SMALL_OBSTACLE_SIZE),
-            (OBSTACLE_X + offset, OBSTACLE_Y - offset, SMALL_OBSTACLE_SIZE),
-            (OBSTACLE_X - offset, OBSTACLE_Y + offset, SMALL_OBSTACLE_SIZE),
-            (OBSTACLE_X + offset, OBSTACLE_Y + offset, SMALL_OBSTACLE_SIZE)
-        ]
